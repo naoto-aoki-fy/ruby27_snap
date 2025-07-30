@@ -30,8 +30,6 @@ This repository contains simple scripts for manually installing Snap packages fr
 4. To install a different Snap package, call `snap_download.sh` and
    `snap_install.sh` with the desired package name and channel.
 
-These scripts are experimental and assume a Linux environment with Snap and `squashfs-tools` available.
-
 ### Test scripts
 
 Several test helpers are included to verify each part of the installation process.
