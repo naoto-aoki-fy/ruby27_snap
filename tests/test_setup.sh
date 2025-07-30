@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-sudo ./setup.sh
+sudo ../examples/setup_ruby27.sh
 
 if [ -x /snap/ruby/current/bin/ruby ]; then
   echo "setup: ok"
