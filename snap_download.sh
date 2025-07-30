@@ -35,8 +35,22 @@ echo "▼ download .snap (${SNAP_PATH})"
 curl -L -C - -o "${SNAP_PATH}"  "${DOWNLOAD_URL}"
 
 echo "▼ download .assert (${ASSERT_PATH})"
-if ! curl -fsSL -o "${ASSERT_PATH}" \
-  "https://api.snapcraft.io/api/v1/snaps/assertions/snap-revision/${SNAP_ID}_${REVISION}.assert"; then
+SHA3_HEX=$(echo "${ENTRY}" | jq -r '.download."sha3-384"')
+if [ -n "${SHA3_HEX}" ] && command -v python3 >/dev/null; then
+  B64_KEY=$(python3 - <<EOF
+import base64
+print(base64.urlsafe_b64encode(bytes.fromhex("${SHA3_HEX}")).decode().rstrip('='))
+EOF
+)
+  curl -fsSL -H "Accept: application/x.ubuntu.assertion" \
+    -o "${ASSERT_PATH}" \
+    "https://api.snapcraft.io/v2/assertions/snap-revision/${B64_KEY}?max-format=0" || true
+  if [ -s "${ASSERT_PATH}" ] && ! grep -q '^snap-name:' "${ASSERT_PATH}"; then
+    { echo "snap-name: ${SNAP_NAME}"; cat "${ASSERT_PATH}"; } >"${ASSERT_PATH}.tmp"
+    mv "${ASSERT_PATH}.tmp" "${ASSERT_PATH}"
+  fi
+fi
+if [ ! -s "${ASSERT_PATH}" ]; then
   cat >"${ASSERT_PATH}" <<EOF_ASSERT
 type: snap-revision
 snap-name: ${SNAP_NAME}
