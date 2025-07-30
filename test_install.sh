@@ -15,3 +15,10 @@ else
   echo "install: failed" >&2
   exit 1
 fi
+
+if [ -x /snap/bin/ruby ]; then
+  echo "wrapper: ok"
+else
+  echo "wrapper: failed" >&2
+  exit 1
+fi
