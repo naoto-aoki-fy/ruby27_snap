@@ -17,12 +17,11 @@ if [ ${#MISSING[@]} -gt 0 ]; then
   apt-get install -y "${MISSING[@]}"
 fi
 
-SNAP_FILE="ruby27.snap"
+DOWNLOAD_DIR="."
 SNAP_DIR="/opt/ruby27"
 
-if [ ! -f "$SNAP_FILE" ]; then
-  ./snap_download.sh ruby 2.7/stable "$(dpkg --print-architecture)" "$SNAP_FILE"
-fi
+INFO=$(./snap_download.sh ruby 2.7/stable "$(dpkg --print-architecture)" "$DOWNLOAD_DIR")
+SNAP_FILE=$(echo "$INFO" | grep '^SNAP=' | cut -d= -f2)
 
 if [ ! -d "$SNAP_DIR" ]; then
   unsquashfs -d "$SNAP_DIR" "$SNAP_FILE"
