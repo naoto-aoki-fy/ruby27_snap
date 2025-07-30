@@ -27,7 +27,8 @@ if [ -f "$SNAP_YAML" ]; then
       all_env | to_entries[] | "\(.key)\t\(.value)"
     ' "$SNAP_YAML" 2>/dev/null || true)
   if [ -z "$env_lines" ]; then
-    env_lines=$(ruby -ryaml -e 'd = YAML.load_file(ARGV[0]); env = d["environment"] || {}; (d["apps"] || {}).each_value { |a| env.merge!(a["environment"] || {}) if a.is_a?(Hash) }; env.each { |k,v| puts "#{k}\t#{v}" }' "$SNAP_YAML")
+    echo "error: \$env_lines is empty" 1>&2
+    return 1
   fi
   while IFS=$'\t' read -r key val; do
     [ -z "$key" ] && continue
