@@ -55,15 +55,12 @@ if [ -f "$SNAP_YAML" ]; then
   fi
   : "${RUBY27_ENV_VARS[LD_LIBRARY_PATH]:=""}"
   if [ -z "${RUBY27_ENV_VARS[LD_LIBRARY_PATH]}" ]; then
-export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
-fi
+    export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+  fi
 
 else
-  export PATH="$SNAP/bin:$PATH"
-  export RUBYLIB="$SNAP/lib/ruby/2.7.0:$SNAP/lib/ruby/2.7.0/$(uname -m)-linux:${RUBYLIB:-}"
-  export GEM_HOME="$SNAP/lib/ruby/gems/2.7.0"
-export GEM_PATH="$GEM_HOME"
-export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+  echo "error: $SNAP_YAML not found" 1>&2
+  return 1
 fi
 
 # Define a function to restore the previous environment
