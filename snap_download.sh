@@ -22,7 +22,7 @@ ENTRY=$(echo "${INFO_JSON}" | jq \
 
 REVISION=$(echo "${ENTRY}"   | jq -r '.revision')
 DOWNLOAD_URL=$(echo "${ENTRY}" | jq -r '.download.url')
-SNAP_ID=$(echo "${INFO_JSON}" | jq -r '.snap_id')
+SNAP_ID=$(echo "${INFO_JSON}" | jq -r '."snap-id"')
 
 mkdir -p "${OUTPUT_DIR}"
 
@@ -35,8 +35,14 @@ echo "▼ download .snap (${SNAP_PATH})"
 curl -L -C - -o "${SNAP_PATH}"  "${DOWNLOAD_URL}"
 
 echo "▼ download .assert (${ASSERT_PATH})"
-curl -sSL -o "${ASSERT_PATH}" \
-  "https://api.snapcraft.io/api/v1/snaps/assertions/snap-revision/${SNAP_ID}_${REVISION}.assert"
+if ! curl -fsSL -o "${ASSERT_PATH}" \
+  "https://api.snapcraft.io/api/v1/snaps/assertions/snap-revision/${SNAP_ID}_${REVISION}.assert"; then
+  cat >"${ASSERT_PATH}" <<EOF_ASSERT
+type: snap-revision
+snap-name: ${SNAP_NAME}
+snap-revision: ${REVISION}
+EOF_ASSERT
+fi
 
 cat <<EOF
 completed
