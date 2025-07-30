@@ -26,7 +26,7 @@ ruby --version | grep -q "2.7"
 ruby -ropenssl -e 'puts :ok'
 
 # deactivate and confirm ruby path changed
-source ./deactivate.sh
+deactivate
 if [ "$(which ruby)" = "/snap/ruby/current/bin/ruby" ]; then
   echo "ruby path not restored" >&2
   exit 1

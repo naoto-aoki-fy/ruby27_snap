@@ -10,9 +10,8 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
 - **setup.sh** – Installs Ruby 2.7 using a downloaded Snap package,
   skipping extraction when the destination directory already exists and only
   running `apt` commands when required packages are missing.
-- **activate.sh** – Sets environment variables for running Ruby 2.7 and saves
-  the previous values so they can be restored with `deactivate.sh`.
-- **deactivate.sh** – Restores the environment to its previous state.
+- **activate.sh** – Sets environment variables for running Ruby 2.7 and defines
+  a `deactivate` function to restore the previous environment.
 
 ## Usage
 
@@ -21,7 +20,7 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
    Required packages are installed only when missing, so `apt-get update` and
    `apt-get install` are skipped if everything is already present.
 2. Source `activate.sh` to update the environment variables for your shell.
-   When you are done using this Ruby environment, source `deactivate.sh` to
+   When you are done using this Ruby environment, run `deactivate` to
    restore your previous settings.
 3. Use `snap_install.sh <assert> <snap>` to extract a previously downloaded
    package into `/snap/<name>/<revision>/`.
