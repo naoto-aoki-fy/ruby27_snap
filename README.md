@@ -26,6 +26,7 @@ These scripts are experimental and assume a Linux environment with Snap and `squ
 ### Setup script for Codex
 
 ```bash
+mise settings add idiomatic_version_file_enable_tools "[]"
 git clone https://github.com/naoto-aoki-fy/ruby27_snap.git ruby27_snap
 ./ruby27_snap/install_ruby.sh
 
