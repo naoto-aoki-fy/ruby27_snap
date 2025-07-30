@@ -22,3 +22,13 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
    restore your previous settings.
 
 These scripts are experimental and assume a Linux environment with Snap and `squashfs-tools` available.
+
+### Setup script for Codex
+
+```bash
+git clone https://github.com/naoto-aoki-fy/ruby27_snap.git ruby27_snap
+./ruby27_snap/install_ruby.sh
+
+echo >> "$HOME/.bashrc"
+echo source "$PWD"/ruby27_snap/activate.sh >> "$HOME/.bashrc"
+```
