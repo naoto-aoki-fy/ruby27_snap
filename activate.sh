@@ -22,26 +22,21 @@ if [ -f "$SNAP_YAML" ]; then
   declare -A RUBY27_ENV_VARS
   while IFS=$'\t' read -r key val; do
     [ -z "$key" ] && continue
+    val="${val//\$SNAP_ARCH/$SNAP_ARCH}"
+    val="${val//\$SNAP/$SNAP}"
     RUBY27_ENV_VARS["$key"]="$val"
     if [ -z "${!key+x}" ]; then
       eval "$key=''"
     fi
     eval "export $key=\"$val\""
-  done < <(/usr/bin/python3 - "$SNAP_YAML" "$SNAP" "$SNAP_ARCH" <<'EOF'
-import sys, yaml
-yaml_path, snap_dir = sys.argv[1], sys.argv[2]
-with open(yaml_path) as f:
-    data = yaml.safe_load(f)
-env = {}
-env.update(data.get('environment', {}))
-for app in data.get('apps', {}).values():
-    if isinstance(app, dict) and 'environment' in app:
-        env.update(app['environment'])
-for k, v in env.items():
-    v = v.replace('$SNAP_ARCH', sys.argv[3]).replace('$SNAP', snap_dir)
-    print(f"{k}\t{v}")
-EOF
-)
+  done < <(
+    yq -r '
+      def all_env:
+        (.environment // {}) as $e
+        | reduce (.apps[]? | .environment? // {}) as $a ($e; . * $a);
+      all_env | to_entries[] | "\(.key)\t\(.value)"
+    ' "$SNAP_YAML"
+  )
   : "${RUBY27_ENV_VARS[PATH]:=""}"
   if [ -z "${RUBY27_ENV_VARS[PATH]}" ]; then
     export PATH="$SNAP/bin:$PATH"
