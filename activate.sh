@@ -1,5 +1,5 @@
 # Environment activation for Ruby 2.7 installed from the Snap package
-SNAP=/opt/ruby27
+SNAP=/snap/ruby/current
 
 # Save current values to allow restoring them later
 [ -z "${RUBY27_OLD_PATH+x}" ] && RUBY27_OLD_PATH="${PATH:-}"
