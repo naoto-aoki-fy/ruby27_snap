@@ -9,6 +9,9 @@ This repository contains simple scripts for manually installing Snap packages fr
   `.snap` files, extracting to `/snap/<name>/<revision>/` and creating
   wrapper scripts under `/snap/bin` for the commands defined in
   `meta/snap.yaml`.
+- **snap/snap_activate.sh** – Temporarily adds `/snap/bin` to the `PATH` and
+  defines a `snap_deactivate` function to restore the previous value. This makes
+  the commands extracted by `snap_install.sh` available in the current shell.
 - **examples/setup_ruby27.sh** – Example script that installs Ruby 2.7 using these helpers.
   Extraction is skipped when the destination directory already exists and `apt`
   commands are run only when required packages are missing.
