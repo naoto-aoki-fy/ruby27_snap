@@ -6,14 +6,14 @@ apt-get update
 apt-get install -y squashfs-tools
 
 SNAP_FILE="ruby27.snap"
-SNAP_DIR="/opt/ruby27-snap"
+SNAP_DIR="/opt/ruby27"
 
 if [ ! -f "$SNAP_FILE" ]; then
   ./snap_download.sh ruby 2.7/stable "$(dpkg --print-architecture)" "$SNAP_FILE"
 fi
 
 if [ ! -d "$SNAP_DIR" ]; then
-  unsquashfs "$SNAP_FILE" -d "$SNAP_DIR"
+  unsquashfs -d "$SNAP_DIR" "$SNAP_FILE"
 fi
 
 mkdir -p /snap/core20/current/lib64
