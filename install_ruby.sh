@@ -1,10 +1,20 @@
 #!/bin/sh
 
-apt install squashfs-tools
+set -euo pipefail
 
-./download-snap.sh ruby 2.7/stable
+apt-get update
+apt-get install -y squashfs-tools
 
-unsquashfs ruby_308.snap.snap -d /opt/ruby27-snap
+SNAP_FILE="ruby27.snap"
+SNAP_DIR="/opt/ruby27-snap"
+
+if [ ! -f "$SNAP_FILE" ]; then
+  ./snap_download.sh ruby 2.7/stable "$(dpkg --print-architecture)" "$SNAP_FILE"
+fi
+
+if [ ! -d "$SNAP_DIR" ]; then
+  unsquashfs "$SNAP_FILE" -d "$SNAP_DIR"
+fi
 
 mkdir -p /snap/core20/current/lib64
-ln -s /lib64/ld-linux-x86-64.so.2 /snap/core20/current/lib64/ld-linux-x86-64.so.2
+ln -sf /lib64/ld-linux-x86-64.so.2 /snap/core20/current/lib64/ld-linux-x86-64.so.2

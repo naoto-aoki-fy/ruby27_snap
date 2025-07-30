@@ -1,12 +1,13 @@
 #!/bin/bash
-# download-snap.sh  <snap名>  <トラック/リスク>  [arch]
-# 例: ./download-snap.sh ruby 2.7/stable amd64
+# download-snap.sh  <snap名>  <トラック/リスク>  [arch] [保存ファイル名]
+# 例: ./download-snap.sh ruby 2.7/stable amd64 ruby27.snap
 
 set -euo pipefail
 
 SNAP_NAME=${1:? "snap 名を指定してください"}
 CHANNEL=${2:-stable}          # 例: "2.7/stable" や "beta"
 ARCH=${3:-$(dpkg --print-architecture)}  # 省略時はホストの arch
+OUTPUT_FILE=${4:-}
 SERIES=16                     # 現行デバイス・シリーズは 16 で固定
 
 # --- 1) メタデータ取得 -------------------------------------------------------
@@ -23,7 +24,11 @@ REVISION=$(echo "${ENTRY}"   | jq -r '.revision')
 DOWNLOAD_URL=$(echo "${ENTRY}" | jq -r '.download.url')
 SNAP_ID=$(echo "${INFO_JSON}" | jq -r '.snap_id')
 
-F_SNAP="${SNAP_NAME}_${REVISION}_${ARCH}.snap"
+if [ -n "${OUTPUT_FILE}" ]; then
+  F_SNAP="${OUTPUT_FILE}"
+else
+  F_SNAP="${SNAP_NAME}_${REVISION}_${ARCH}.snap"
+fi
 F_ASSERT="${SNAP_NAME}_${REVISION}.assert"
 
 echo "▼ download .snap (${F_SNAP})"
