@@ -49,5 +49,6 @@ Run them individually or use `tests/test.sh` to execute all of them in order.
 ```bash
 mise settings add idiomatic_version_file_enable_tools "[]"
 git clone https://github.com/naoto-aoki-fy/ruby27_snap.git ruby27_snap
-./ruby27_snap/setup.sh
+./ruby27_snap/examples/setup_ruby27.sh
+printf "\n\n$PWD/ruby27_snap/snap/snap_activate.sh\n" >> "$HOME/.bashrc"
 ```
