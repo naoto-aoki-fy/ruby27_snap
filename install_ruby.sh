@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
+cd "$(dirname "$BASH_SOURCE")"
 
 # Skip apt operations when all required packages are installed
 PACKAGES=(squashfs-tools curl jq)
