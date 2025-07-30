@@ -33,7 +33,8 @@ SNAP_YAML="$TARGET_DIR/meta/snap.yaml"
 if [ -f "$SNAP_YAML" ]; then
   mkdir -p /snap/bin
   SNAP_ARCH=$(dpkg --print-architecture)
-  for APP in $(yq -r '.apps | keys[]' "$SNAP_YAML"); do
+  # Use empty object when no apps are defined to avoid jq errors
+  for APP in $(yq -r '.apps // {} | keys[]' "$SNAP_YAML"); do
     CMD=$(yq -r ".apps.\"${APP}\".command" "$SNAP_YAML")
     [ "$CMD" = "null" ] && continue
     WRAPPER="/snap/bin/${APP}"
