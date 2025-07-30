@@ -27,6 +27,20 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
 
 These scripts are experimental and assume a Linux environment with Snap and `squashfs-tools` available.
 
+### Test scripts
+
+Several test helpers are included to verify each part of the installation process.
+Run them individually or use `test.sh` to execute all of them in order.
+
+- `test_download.sh` – checks that `snap_download.sh` successfully downloads the
+  `.snap` and `.assert` files.
+- `test_install.sh` – verifies extraction of a downloaded Snap using
+  `snap_install.sh`.
+- `test_setup.sh` – runs `setup.sh` and confirms that Ruby is installed under
+  `/snap/ruby/current`.
+- `test_activate.sh` – sources `activate.sh`, confirms the Ruby version and that
+  the environment can be restored.
+
 ### Setup script for Codex
 
 ```bash
