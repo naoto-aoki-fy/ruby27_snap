@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Install a snap package using a downloaded .assert file to determine the name and revision
-# Usage: ./install_assert.sh <assert-file> [download-dir] [target-dir]
+# Install a snap package using downloaded .assert and .snap files
+# Usage: ./snap_install.sh <assert-file> <snap-file> [target-dir]
 # - <assert-file>: Path to the .assert file
-# - [download-dir]: Directory containing the corresponding .snap (default dirname of assert)
+# - <snap-file>:   Path to the matching .snap file
 # - [target-dir]:   Parent directory for extraction (default /snap)
 
 set -euo pipefail
 
 ASSERT_FILE=${1:?"Path to .assert file required"}
-DOWNLOAD_DIR=${2:-$(dirname "$ASSERT_FILE")}
+SNAP_FILE=${2:?"Path to .snap file required"}
 TARGET_PARENT=${3:-/snap}
 
 SNAP_NAME=$(awk -F': ' '/^snap-name:/ {print $2; exit}' "$ASSERT_FILE")
@@ -20,9 +20,8 @@ if [[ -z "$SNAP_NAME" || -z "$REVISION" ]]; then
   exit 1
 fi
 
-SNAP_FILE=$(find "$DOWNLOAD_DIR" -maxdepth 1 -name "${SNAP_NAME}_${REVISION}_*.snap" | head -n 1 || true)
-if [ -z "$SNAP_FILE" ]; then
-  echo "Snap file for $SNAP_NAME revision $REVISION not found in $DOWNLOAD_DIR" >&2
+if [ ! -f "$SNAP_FILE" ]; then
+  echo "Snap file $SNAP_FILE not found" >&2
   exit 1
 fi
 
