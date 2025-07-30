@@ -44,7 +44,7 @@ Run them individually or use `tests/test.sh` to execute all of them in order.
 - `test_setup.sh` – runs the example script and confirms that Ruby is installed under
   `/snap/ruby/current`.
 
-### Setup script for Codex
+### ruby2.7 setup script for Codex
 
 ```bash
 mise settings add idiomatic_version_file_enable_tools "[]"
