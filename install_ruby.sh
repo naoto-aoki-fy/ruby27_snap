@@ -2,8 +2,19 @@
 
 set -euo pipefail
 
-apt-get update
-apt-get install -y squashfs-tools curl jq
+# Skip apt operations when all required packages are installed
+PACKAGES=(squashfs-tools curl jq)
+MISSING=()
+for pkg in "${PACKAGES[@]}"; do
+  if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+    MISSING+=("$pkg")
+  fi
+done
+
+if [ ${#MISSING[@]} -gt 0 ]; then
+  apt-get update
+  apt-get install -y "${MISSING[@]}"
+fi
 
 SNAP_FILE="ruby27.snap"
 SNAP_DIR="/opt/ruby27"
