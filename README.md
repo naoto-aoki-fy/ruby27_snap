@@ -8,6 +8,9 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
 - **install_snap.sh** – Extracts a previously downloaded `.snap` into
   `/snap/<name>/<revision>/`. This works for any snap package when given the
   package name and download folder.
+- **install_assert.sh** – Uses a downloaded `.assert` file to determine the
+  package name and revision, then extracts the matching `.snap` into
+  `/snap/<name>/<revision>/`.
 - **install_ruby.sh** – Installs Ruby 2.7 using a downloaded Snap package,
   skipping extraction when the destination directory already exists and only
   running `apt` commands when required packages are missing.
@@ -26,6 +29,9 @@ This repository contains simple scripts for installing Ruby 2.7 from a Snap pack
    restore your previous settings.
 3. Use `install_snap.sh <name> <dir>` to extract a previously downloaded snap
    into `/snap/<name>/<revision>/`. The snap must already exist in `<dir>`.
+4. Use `install_assert.sh <file>` to extract the package specified by a
+   downloaded `.assert` file. The corresponding `.snap` must be in the same
+   directory unless a different download folder is given.
 
 These scripts are experimental and assume a Linux environment with Snap and `squashfs-tools` available.
 
