@@ -55,12 +55,29 @@ if [ -f "$SNAP_YAML" ]; then
   fi
   : "${RUBY27_ENV_VARS[LD_LIBRARY_PATH]:=""}"
   if [ -z "${RUBY27_ENV_VARS[LD_LIBRARY_PATH]}" ]; then
-    export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
-  fi
+export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+fi
+
 else
   export PATH="$SNAP/bin:$PATH"
   export RUBYLIB="$SNAP/lib/ruby/2.7.0:$SNAP/lib/ruby/2.7.0/$(uname -m)-linux:${RUBYLIB:-}"
   export GEM_HOME="$SNAP/lib/ruby/gems/2.7.0"
-  export GEM_PATH="$GEM_HOME"
-  export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+export GEM_PATH="$GEM_HOME"
+export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
 fi
+
+# Define a function to restore the previous environment
+deactivate() {
+  # Restore original PATH
+  [ -n "${RUBY27_OLD_PATH+x}" ] && PATH="$RUBY27_OLD_PATH" && export PATH && unset RUBY27_OLD_PATH
+  # Restore original RUBYLIB
+  [ -n "${RUBY27_OLD_RUBYLIB+x}" ] && RUBYLIB="$RUBY27_OLD_RUBYLIB" && export RUBYLIB && unset RUBY27_OLD_RUBYLIB
+  # Restore original GEM_HOME
+  [ -n "${RUBY27_OLD_GEM_HOME+x}" ] && GEM_HOME="$RUBY27_OLD_GEM_HOME" && export GEM_HOME && unset RUBY27_OLD_GEM_HOME
+  # Restore original GEM_PATH
+  [ -n "${RUBY27_OLD_GEM_PATH+x}" ] && GEM_PATH="$RUBY27_OLD_GEM_PATH" && export GEM_PATH && unset RUBY27_OLD_GEM_PATH
+  # Restore original LD_LIBRARY_PATH
+  [ -n "${RUBY27_OLD_LD_LIBRARY_PATH+x}" ] && LD_LIBRARY_PATH="$RUBY27_OLD_LD_LIBRARY_PATH" && export LD_LIBRARY_PATH && unset RUBY27_OLD_LD_LIBRARY_PATH
+  unset SNAP RUBY27_ENV_VARS
+  unset -f deactivate
+}
