@@ -20,16 +20,6 @@ SNAP_ARCH=$(dpkg --print-architecture)
 
 if [ -f "$SNAP_YAML" ]; then
   declare -A RUBY27_ENV_VARS
-  env_lines=$(yq -r '
-      def all_env:
-        (.environment // {}) as $e
-        | reduce (.apps[]? | .environment? // {}) as $a ($e; . * $a);
-      all_env | to_entries[] | "\(.key)\t\(.value)"
-    ' "$SNAP_YAML" 2>/dev/null || true)
-  if [ -z "$env_lines" ]; then
-    echo "error: \$env_lines is empty" 1>&2
-    return 1
-  fi
   while IFS=$'\t' read -r key val; do
     [ -z "$key" ] && continue
     val="${val//\$SNAP_ARCH/$SNAP_ARCH}"
@@ -39,7 +29,14 @@ if [ -f "$SNAP_YAML" ]; then
       eval "$key=''"
     fi
     eval "export $key=\"$val\""
-  done <<<"$env_lines"
+  done < <(
+    yq -r '
+      def all_env:
+        (.environment // {}) as $e
+        | reduce (.apps[]? | .environment? // {}) as $a ($e; . * $a);
+      all_env | to_entries[] | "\(.key)\t\(.value)"
+    ' "$SNAP_YAML"
+  )
   : "${RUBY27_ENV_VARS[PATH]:=""}"
   if [ -z "${RUBY27_ENV_VARS[PATH]}" ]; then
     export PATH="$SNAP/bin:$PATH"

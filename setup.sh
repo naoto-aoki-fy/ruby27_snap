@@ -21,7 +21,18 @@ ARCH="$(dpkg --print-architecture)"
 
 # Install yq from GitHub if not already installed
 if ! command -v yq >/dev/null 2>&1; then
-  YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.47.1/yq_linux_$ARCH.tar.gz"
+  case "$ARCH" in
+    amd64)
+      YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.47.1/yq_linux_amd64.tar.gz"
+      ;;
+    arm64)
+      YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.47.1/yq_linux_arm64.tar.gz"
+      ;;
+    *)
+      echo "Unsupported architecture for yq: $ARCH" >&2
+      exit 1
+      ;;
+  esac
   TMP_DIR="$(mktemp -d)"
   curl -sSL "$YQ_URL" | tar xz -C "$TMP_DIR"
   install -m 755 "$TMP_DIR"/yq_* /usr/local/bin/yq
