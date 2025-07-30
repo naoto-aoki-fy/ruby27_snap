@@ -2,10 +2,10 @@
 # Environment activation for Ruby 2.7 installed from the Snap package
 
 # Prefer the environment file from a specific revision when available
-SNAP_YAML=/snap/ruby/308/meta/snap.yaml
+SNAP_YAML=/snap/ruby/current/meta/snap.yaml
 SNAP=/snap/ruby/current
 if [ -f "$SNAP_YAML" ]; then
-  SNAP=/snap/ruby/308
+  SNAP=/snap/ruby/current
 else
   SNAP_YAML="$SNAP/meta/snap.yaml"
 fi
@@ -64,4 +64,3 @@ else
   export GEM_PATH="$GEM_HOME"
   export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
 fi
-# exec "$SNAP/bin/ruby" "$@"
