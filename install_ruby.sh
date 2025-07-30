@@ -26,8 +26,6 @@ CORE_ASSERT=$(echo "$CORE_INFO" | grep '^ASSERT=' | cut -d= -f2)
 CORE_RESULT=$(./install_assert.sh "$CORE_ASSERT" "$DOWNLOAD_DIR" /snap)
 CORE_TARGET=$(echo "$CORE_RESULT" | grep '^TARGET_DIR=' | cut -d= -f2)
 ln -sfn "$CORE_TARGET" /snap/core20/current
-mkdir -p /snap/core20/current/lib64
-ln -sf /lib64/ld-linux-x86-64.so.2 /snap/core20/current/lib64/ld-linux-x86-64.so.2
 
 # Install Ruby 2.7 using install_assert.sh
 RUBY_INFO=$(./snap_download.sh ruby 2.7/stable "$ARCH" "$DOWNLOAD_DIR")
