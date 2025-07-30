@@ -20,6 +20,15 @@ SNAP_ARCH=$(dpkg --print-architecture)
 
 if [ -f "$SNAP_YAML" ]; then
   declare -A RUBY27_ENV_VARS
+  env_lines=$(yq -r '
+      def all_env:
+        (.environment // {}) as $e
+        | reduce (.apps[]? | .environment? // {}) as $a ($e; . * $a);
+      all_env | to_entries[] | "\(.key)\t\(.value)"
+    ' "$SNAP_YAML" 2>/dev/null || true)
+  if [ -z "$env_lines" ]; then
+    env_lines=$(ruby -ryaml -e 'd = YAML.load_file(ARGV[0]); env = d["environment"] || {}; (d["apps"] || {}).each_value { |a| env.merge!(a["environment"] || {}) if a.is_a?(Hash) }; env.each { |k,v| puts "#{k}\t#{v}" }' "$SNAP_YAML")
+  fi
   while IFS=$'\t' read -r key val; do
     [ -z "$key" ] && continue
     val="${val//\$SNAP_ARCH/$SNAP_ARCH}"
@@ -29,14 +38,7 @@ if [ -f "$SNAP_YAML" ]; then
       eval "$key=''"
     fi
     eval "export $key=\"$val\""
-  done < <(
-    yq -r '
-      def all_env:
-        (.environment // {}) as $e
-        | reduce (.apps[]? | .environment? // {}) as $a ($e; . * $a);
-      all_env | to_entries[] | "\(.key)\t\(.value)"
-    ' "$SNAP_YAML"
-  )
+  done <<<"$env_lines"
   : "${RUBY27_ENV_VARS[PATH]:=""}"
   if [ -z "${RUBY27_ENV_VARS[PATH]}" ]; then
     export PATH="$SNAP/bin:$PATH"
