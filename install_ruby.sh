@@ -3,7 +3,7 @@
 set -euo pipefail
 
 apt-get update
-apt-get install -y squashfs-tools
+apt-get install -y squashfs-tools curl jq
 
 SNAP_FILE="ruby27.snap"
 SNAP_DIR="/opt/ruby27"
