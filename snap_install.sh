@@ -21,7 +21,7 @@ if [[ -z "$SNAP_NAME" || -z "$REVISION" ]]; then
 fi
 
 
-TARGET_DIR=$(realpath "$TARGET_PARENT/$SNAP_NAME/$REVISION")
+TARGET_DIR="$TARGET_PARENT/$SNAP_NAME/$REVISION"
 
 if [ ! -d "$TARGET_DIR" ]; then
   mkdir -p "$TARGET_DIR"
